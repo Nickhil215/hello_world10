@@ -97,8 +97,7 @@ def dispatcher():
 
 @app.route('/one', methods=['GET'])
 def call_function_one():
-    
-    return jsonify({"result":function_one})()
+    return jsonify({"result":function_one})
    
 
 if __name__ == "__main__":
