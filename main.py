@@ -27,9 +27,10 @@
 #         return jsonify(response.json()), response.status_code  # Ensure JSON response with status code
 #     except Exception as e:
 #         return jsonify({"error": str(e)}), 500  # Handle errors properly
-
 import functions_framework
-from flask import jsonify
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
 
 # Define multiple functions
 def function_one():
@@ -41,8 +42,9 @@ def function_two():
 def function_three():
     return jsonify({"message": "Hello from Function Three!"})
 
+
 @functions_framework.http
-def app(request):
+def app_function(request):
     """HTTP Cloud Function that routes requests to different functions."""
     path = request.path  # Get the requested path
 
