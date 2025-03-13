@@ -27,32 +27,37 @@
 #         return jsonify(response.json()), response.status_code  # Ensure JSON response with status code
 #     except Exception as e:
 #         return jsonify({"error": str(e)}), 500  # Handle errors properly
-import functions_framework
+
+
+
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Define multiple functions
 def function_one():
-    return jsonify({"message": "Hello from Function One!"})
+    return "Hello from Function One!"
 
 def function_two():
-    return jsonify({"message": "Hello from Function Two!"})
+    return "Hello from Function Two!"
 
 def function_three():
-    return jsonify({"message": "Hello from Function Three!"})
+    return "Hello from Function Three!"
 
+@app.route('/invoke', methods=['POST'])
+def dispatcher():
+    data = request.get_json()
+    function_name = data.get("function")
 
-@functions_framework.http
-def app_function(request):
-    """HTTP Cloud Function that routes requests to different functions."""
-    path = request.path  # Get the requested path
+    functions = {
+        "function_one": function_one,
+        "function_two": function_two,
+        "function_three": function_three,
+    }
 
-    if path == "/function_one":
-        return function_one()
-    elif path == "/function_two":
-        return function_two()
-    elif path == "/function_three":
-        return function_three()
+    if function_name in functions:
+        return jsonify({"result": functions[function_name]()})
     else:
         return jsonify({"error": "Function not found"}), 404
+
+if __name__ == "__main__":
+    app.run(port=8080)
