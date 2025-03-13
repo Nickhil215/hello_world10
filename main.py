@@ -28,19 +28,29 @@
 #     except Exception as e:
 #         return jsonify({"error": str(e)}), 500  # Handle errors properly
 
+import functions_framework
+from flask import jsonify
 
-from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/function_one")
+# Define multiple functions
 def function_one():
-    return {"message": "Hello from Function One!"}
+    return jsonify({"message": "Hello from Function One!"})
 
-@app.get("/function_two")
 def function_two():
-    return {"message": "Hello from Function Two!"}
+    return jsonify({"message": "Hello from Function Two!"})
 
-@app.get("/function_three")
 def function_three():
-    return {"message": "Hello from Function Three!"}
+    return jsonify({"message": "Hello from Function Three!"})
+
+@functions_framework.http
+def app(request):
+    """HTTP Cloud Function that routes requests to different functions."""
+    path = request.path  # Get the requested path
+
+    if path == "/function_one":
+        return function_one()
+    elif path == "/function_two":
+        return function_two()
+    elif path == "/function_three":
+        return function_three()
+    else:
+        return jsonify({"error": "Function not found"}), 404
